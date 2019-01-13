@@ -1,0 +1,37 @@
+@import "../../stylesheets/index"
+
+.tabs
+  position: fixed
+  z-index: 1
+  width: 100%
+  background-color: rgba(#ffffff, 0.95)
+  white-space: nowrap;
+  overflow: scroll
+  box-sizing: border-box
+  box-shadow: 0 4px 12px rgba(0,0,0,.08), 0 0 1px rgba(1,0,0,.1)
+  height: tab-height
+  display: flex
+  top: 0
+  left: 0
+  align-items: center
+  margin-top: -1px
+  &-item
+    padding: 0px 20px
+    color: #999;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    transition: color .2s ease-in-out,opacity .2s ease-in-out;
+
+    &_selected
+      color: #111;
+      border-bottom: 4px solid;
+.photos
+  height: "calc(100vh - %s + 2px)" % tab-height
+  margin-top: tab-height - 2px
+
+.loading-status
+  color: #888
+  text-align: center
+  width: 100%
+  padding: 30px 0
