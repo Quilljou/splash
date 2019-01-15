@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Swiper, SwiperItem } from '@tarojs/components'
 import classnames from 'classnames'
 import './index.styl'
 import api from '../../apis'
@@ -55,27 +55,38 @@ const LOADING_STATUS = {
   NOMORE: 'NOMORE'
 };
 
+
 export default class Index extends Component {
    constructor(props) {
-     super(props)
-     this.state = {
-       tabs,
-       page: 1,
-       perPage: 10,
-       photos: [],
-       selectedTab: tabs[0].value,
-       loadingStatus: LOADING_STATUS.LOADING
-     }
+      super(props)
+      const defaultPhotos = this.initDefaultPhotos()
+      this.state = {
+        photos: defaultPhotos,
+        selectedTab: tabs[0].value
+      }
    }
 
   config = {
     navigationBarTitleText: '首页',
   }
 
+  initDefaultPhotos() {
+    return tabs.reduce((prev, next) => {
+        prev[next.value] = {
+            tab: next,
+            page: 1,
+            perPage: 10,
+            list: [],
+            loadingStatus: LOADING_STATUS.LOADING
+          }
+        return prev;
+    },{})
+  }
+
   componentWillMount () { }
 
   componentDidMount () {
-    this.changeTab(this.state.tabs[0])
+    this.changeTab(tabs[0])
   }
 
   componentWillUnmount () { }
@@ -85,23 +96,27 @@ export default class Index extends Component {
   componentDidHide () { }
 
   onReachBottom() {
-    console.log('reached bottom')
+    const { selectedTab, photos } = this.state
+    const selectedPhotos = photos[selectedTab]
     let {
       loadingStatus,
       page
-    } = this.state
+    } = selectedPhotos
     if(loadingStatus !== LOADING_STATUS.OK) return;
+    const nextList = {
+      [selectedTab]: {
+        ...selectedPhotos,
+        ...{
+          page: ++page
+        }
+      }
+    }
     this.setState({
-      page: ++page
+      photos: {
+        ...photos,
+        ...nextList
+      }
     }, this.loadPhotos)
-  }
-
-  resetPagination() {
-    this.setState({
-      page: 1,
-      perPage: 10,
-      photos: []
-    })
   }
 
   handleRetry() {
@@ -109,21 +124,26 @@ export default class Index extends Component {
   }
 
   async changeTab({ value }) {
-    this.resetPagination()
     this.setState({
       selectedTab: value
     }, this.loadPhotos)
   }
 
   async loadPhotos() {
+    const { selectedTab, photos } = this.state
+    let nextList = {
+      [selectedTab]: {
+        ...photos[selectedTab],
+        loadingStatus: LOADING_STATUS.LOADING
+      }
+    }
     this.setState({
-      loadingStatus: LOADING_STATUS.LOADING
-    })
-    const {
-      page,
-      perPage,
-      selectedTab
-    } = this.state
+      photos: {
+        ...photos,
+        ...nextList
+      }
+    }, () => console.log(this.state))
+    const { page, perPage, list } = nextList[selectedTab]
     const query = {
       page,
       perPage,
@@ -143,31 +163,56 @@ export default class Index extends Component {
       data
     } = await api[func](query)
     console.log(statusCode)
+
+    let payload
     if (statusCode === RES_STATUS.SUCCESS) {
-      this.setState({
+       payload = {
         loadingStatus: LOADING_STATUS.OK,
-        photos: this.state.photos.concat(data)
-      })
+        list: list.concat(data)
+      }
     } else {
-      this.setState({
+      payload ={
         loadingStatus: LOADING_STATUS.FAILED,
-        photos: this.state.photos.concat(data)
-      })
+      }
     }
+    nextList[selectedTab] = {
+      ...nextList[selectedTab],
+      ...payload
+    }
+    this.setState({
+      photos: {
+        ...this.state.photos,
+        ...nextList
+      }
+    })
+
+  }
+
+  get selectedTabIndex() {
+    const { selectedTab } = this.state
+    return tabs.findIndex(t => t.value === selectedTab)
+  }
+
+  onSwipeChange(e) {
+    const index = e.detail.current
+    this.setState({
+      selectedTab: tabs[index].value
+    }, this.loadPhotos)
   }
 
   render () {
-    console.log('render', this.state)
-    const { loadingStatus, photos } = this.state;
+    // console.log('render', this.state)
+    const { photos, selectedTab } = this.state;
+    const selectedTabIndex = this.selectedTabIndex
     return (
       <View className='index'>
         <View className='tabs'>
-          {this.state.tabs.map(tab => {
+          {tabs.map(tab => {
             return (
               <View key={
                 tab.value
               }
-                className={classnames('tabs-item',{'tabs-item_selected': this.state.selectedTab === tab.value})}
+                className={classnames('tabs-item',{'tabs-item_selected': selectedTab === tab.value})}
                 onClick={
                 this.changeTab.bind(this, tab)
               }
@@ -177,13 +222,22 @@ export default class Index extends Component {
             )
           })}
         </View>
-        <PhotoList
-          list={photos}
-          externalClass='photos'
-          loadingStatus={loadingStatus}
-          onReachBottom={this.onReachBottom}
-          onRetry={this.handleRetry}
-        />
+        <Swiper current={selectedTabIndex} onChange={this.onSwipeChange} className='photos-swiper'>
+          {tabs.map(tab => {
+            const { loadingStatus, list } = photos[tab.value]
+            return (
+            <SwiperItem key={tab.value}>
+              <PhotoList
+                list={list}
+                skipHiddenItemLayout
+                externalClass='photos'
+                loadingStatus={loadingStatus}
+                onReachBottom={this.onReachBottom}
+                onRetry={this.handleRetry}
+              />
+            </SwiperItem>
+          )})}
+        </Swiper>
         {/* <View className='photos'>
           {
             photos.length ? this.state.photos.map(photo => <PhotoItem photo={photo} key={photo.id}  />) : null

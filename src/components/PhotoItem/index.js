@@ -25,6 +25,7 @@ class PhotoItem extends Component {
       <View
         style={{ 'padding-bottom': paddingBottom }}
         className='photos-item'
+        onTouch
         onClick={this.navToDetail.bind(this, {width, height, id, color, regular })}
       >
         <Image style={
