@@ -1,3 +1,10 @@
+import get from "lodash.get";
+import Taro from '@tarojs/taro'
+import parse from "url-parse";
+
+function getUrlComponents(uri: String): Object {
+  return parse(uri, {}, true);
+}
 class Photos {
   listPhotos({page = 1, perPage = 10, orderBy = "latest"}) {
     const url = "/photos";
@@ -58,6 +65,35 @@ class Photos {
       method: "GET",
       query
     });
+  }
+
+  getDownLoadUrl (photo){
+    const downloadLocation = get(photo, "links.download_location", undefined);
+    if (downloadLocation === undefined) {
+      throw new Error(`Object received is not a photo. ${photo}`);
+    }
+
+    const urlComponents = getUrlComponents(downloadLocation);
+
+    return this.request({
+      url: urlComponents.pathname,
+      method: "GET",
+      query: urlComponents.query
+    });
+  }
+
+  downloadPhoto(url) {
+    let header = Object.assign({}, {
+      "Accept-Version": this._apiVersion,
+      "Authorization": this._bearerToken ?
+        `Bearer ${this._bearerToken}` : `Client-ID ${this._applicationId}`
+    });
+
+
+    return Taro.downloadFile({
+      url,
+      header
+    })
   }
 }
 

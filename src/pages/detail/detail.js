@@ -1,11 +1,15 @@
-import Taro, { Component } from '@tarojs/taro'
+import Taro, { Component, downloadFile } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components';
+import { AtActionSheet, AtActionSheetItem } from "taro-ui"
+
 import './index.styl'
+import '../../stylesheets/action-sheet.css'
 import { getPaddingBottom } from '../../common/common'
 import { formatDate } from '../../common/utils'
 import apis from '../../apis';
 import { RES_STATUS } from '../../common/constants'
 import Exif from './components/Exif'
+
 
 export default class Index extends Component {
   config = {
@@ -19,7 +23,8 @@ export default class Index extends Component {
     this.state = {
       photo: {},
       showMeta: true,
-      showOptional: false
+      showOptional: false,
+      isActionSheetOpened: false
     }
   }
 
@@ -72,9 +77,48 @@ export default class Index extends Component {
     return formatDate(new Date(str), 'YYYY·MM·DD')
   }
 
+  openActionSheet(e) {
+    e.stopPropagation();
+    this.setState({
+      isActionSheetOpened: true
+    })
+  }
+
+  closeActionSheet() {
+    this.setState({
+      isActionSheetOpened: false
+    })
+  }
+
+  async downloadPhoto() {
+    this.closeActionSheet()
+    const { photo } = this.state
+    try {
+      Taro.showLoading({
+        title: '下载中',
+      })
+      const { statusCode, data: { url }} = await apis.getDownLoadUrl(photo)
+      if(statusCode !== RES_STATUS.SUCCESS || !url) throw new Error('获取下载链接失败')
+      const file = await apis.downloadPhoto(url)
+      console.log(file)
+      if(file.statusCode !== RES_STATUS.SUCCESS || !file.tempFilePath) throw new Error('下载失败')
+      const { savedFilePath } = await Taro.saveImageToPhotosAlbum({
+        filePath: file.tempFilePath
+      })
+      Taro.hideLoading()
+    } catch (error) {
+      Taro.hideLoading()
+      console.error(error)
+      Taro.showToast({
+        title: '下载失败',
+        icon: 'none'
+      })
+    }
+  }
+
   render() {
-    const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = this.state.photo
-    const { showMeta,showOptional } = this.state;
+    const { showMeta,showOptional, isActionSheetOpened, photo } = this.state;
+    const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
     return (
       <View className='page-detail' style={{paddingTop: marginTop}}>
         <View
@@ -89,7 +133,7 @@ export default class Index extends Component {
           />
         </View>
         {
-          showMeta && views ?
+          showMeta && exif &&
           <View className='meta' onClick={this.showMoreDetail}>
 
             <View className='reuired'>
@@ -101,7 +145,7 @@ export default class Index extends Component {
                   <Text className='count'>{likes}</Text>
                 </View>
                 <View>
-                  <Text>MORE</Text>
+                  <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
                 </View>
               </View>
 
@@ -120,17 +164,21 @@ export default class Index extends Component {
             </View>
 
             {
-              showOptional ?
+              showOptional &&
                 <View className='optional'>
                   <Exif exif={exif}></Exif>
                 </View>
-            : null
             }
           </View>
-          :
-          null
-          // <View>Loading...</View>
         }
+        <AtActionSheet isOpened={isActionSheetOpened}>
+          <AtActionSheetItem onClick={this.downloadPhoto}>
+            下载
+          </AtActionSheetItem>
+          <AtActionSheetItem>
+            查看原图
+          </AtActionSheetItem>
+        </AtActionSheet>
       </View>
     )
   }

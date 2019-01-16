@@ -10,7 +10,11 @@ import './index.styl'
 // model: "iPhone 7 Plus"
 const ITEMS = [
   {
-    text: 'CAMERA',
+    text: 'CAMERA MAKE',
+    field: 'make'
+  },
+  {
+    text: 'CAMERA MODEL',
     field: 'model'
   },
   {

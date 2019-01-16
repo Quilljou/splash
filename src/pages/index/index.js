@@ -75,7 +75,7 @@ export default class Index extends Component {
         prev[next.value] = {
             tab: next,
             page: 1,
-            perPage: 10,
+            perPage: 6,
             list: [],
             loadingStatus: LOADING_STATUS.LOADING
           }
