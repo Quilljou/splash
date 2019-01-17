@@ -25,6 +25,7 @@
     "@tarojs/components": "1.2.4",
     "@tarojs/mobx": "1.2.4",
     "@tarojs/mobx-h5": "1.2.4",
+    "@tarojs/mobx-prop-types": "^1.2.7",
     "@tarojs/mobx-rn": "1.2.4",
     "@tarojs/rn-runner": "1.2.4",
     "@tarojs/router": "1.2.4",

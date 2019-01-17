@@ -3,7 +3,7 @@ import { Provider } from '@tarojs/mobx'
 import '@tarojs/async-await'
 import Index from './pages/index'
 
-import counterStore from './store/counter'
+import photoStore from './store/photo'
 
 import './app.styl'
 
@@ -14,7 +14,7 @@ import './app.styl'
 // }
 
 const store = {
-  counterStore
+  photoStore
 }
 
 class App extends Component {

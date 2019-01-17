@@ -1,6 +1,7 @@
-import Taro, { Component, downloadFile } from '@tarojs/taro'
+import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components';
 import { AtActionSheet, AtActionSheetItem } from "taro-ui"
+import get from 'lodash.get'
 
 import './index.styl'
 import '../../stylesheets/action-sheet.css'
@@ -78,6 +79,7 @@ export default class Index extends Component {
   }
 
   openActionSheet(e) {
+    console.log(e)
     e.stopPropagation();
     this.setState({
       isActionSheetOpened: true
@@ -102,7 +104,7 @@ export default class Index extends Component {
       const file = await apis.downloadPhoto(url)
       console.log(file)
       if(file.statusCode !== RES_STATUS.SUCCESS || !file.tempFilePath) throw new Error('下载失败')
-      const { savedFilePath } = await Taro.saveImageToPhotosAlbum({
+      await Taro.saveImageToPhotosAlbum({
         filePath: file.tempFilePath
       })
       Taro.hideLoading()
@@ -116,7 +118,20 @@ export default class Index extends Component {
     }
   }
 
+  handlePreview() {
+    this.closeActionSheet()
+    const current = get(this.state.photo,'urls.full', undefined)
+    if(!current) {
+      return Taro.showToast({title: '预览失败'})
+    }
+    Taro.previewImage({
+      current,
+      urls: [current]
+    })
+  }
+
   render() {
+    console.log('render,', this.state)
     const { showMeta,showOptional, isActionSheetOpened, photo } = this.state;
     const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
     return (
@@ -144,7 +159,7 @@ export default class Index extends Component {
                   <Text className='iconfont icon-dianzan'></Text>
                   <Text className='count'>{likes}</Text>
                 </View>
-                <View>
+                <View className='social-right'>
                   <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
                 </View>
               </View>
@@ -171,12 +186,15 @@ export default class Index extends Component {
             }
           </View>
         }
-        <AtActionSheet isOpened={isActionSheetOpened}>
+        <AtActionSheet isOpened={isActionSheetOpened} onClose={this.closeActionSheet}>
+          <AtActionSheetItem on>
+            分享
+          </AtActionSheetItem>
+          <AtActionSheetItem onClick={this.handlePreview}>
+            查看原图
+          </AtActionSheetItem>
           <AtActionSheetItem onClick={this.downloadPhoto}>
             下载
-          </AtActionSheetItem>
-          <AtActionSheetItem>
-            查看原图
           </AtActionSheetItem>
         </AtActionSheet>
       </View>

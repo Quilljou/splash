@@ -1,11 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
 import PropTypes from 'prop-types';
 import classnames from 'classnames'
-import { ScrollView, View, Text } from '@tarojs/components'
+import { PropTypes as MobxPropTypes} from '@tarojs/mobx-prop-types'
+import { ScrollView, View } from '@tarojs/components'
 import { LOADING_STATUS } from '../../common/constants'
 import './index.styl'
 import PhotoItem from '../PhotoItem'
 
+console.log(MobxPropTypes)
 const LOADING_TEXT = '载入中...'
 
 class PhotoList extends Component {
@@ -38,16 +40,6 @@ class PhotoList extends Component {
 
   render() {
     const { externalClass, onReachTop, onReachBottom, onScroll, showTopLoading, loadingStatus, list, onRetry } = this.props
-    // const renderLoadingStatus = () => {
-    //   const { loadingStatus } = this.props;
-    //   if (loadingStatus === LOADING_STATUS.LOADING) {
-    //     return LOADING_TEXT
-    //   } else if(loadingStatus === LOADING_STATUS.FAILED) {
-    //     return <View onClick={onRetry}> 加载失败, 点击重试 </View>
-    //   } else if(loadingStatus === LOADING_STATUS.NOMORE) {
-    //     return '没有更多了'
-    //   } else { return null }
-    // }
 
     return (
       <ScrollView
