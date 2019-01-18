@@ -6,11 +6,10 @@ import get from 'lodash.get'
 import './index.styl'
 import '../../stylesheets/action-sheet.css'
 import { getPaddingBottom } from '../../common/common'
-import { formatDate } from '../../common/utils'
+import { formatDate, abbreviateNumber } from '../../common/utils'
 import apis from '../../apis';
 import { RES_STATUS } from '../../common/constants'
 import Exif from './components/Exif'
-
 
 export default class Index extends Component {
   config = {
@@ -155,9 +154,9 @@ export default class Index extends Component {
               <View className='social'>
                 <View className='social-left'>
                   <Text className='iconfont icon-yueduliang'></Text>
-                  <Text className='count'>{views}</Text>
+                  <Text className='count'>{abbreviateNumber(views)}</Text>
                   <Text className='iconfont icon-dianzan'></Text>
-                  <Text className='count'>{likes}</Text>
+                  <Text className='count'>{abbreviateNumber(likes)}</Text>
                 </View>
                 <View className='social-right'>
                   <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
