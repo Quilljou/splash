@@ -1,41 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components';
 import './index.styl'
-
+import { EXIFS } from '../../../common/constants'
 // aperture: "1.8"
 // exposure_time: "1/35"
 // focal_length: "4.0"
 // iso: 32
 // make: "Apple"
 // model: "iPhone 7 Plus"
-const ITEMS = [
-  {
-    text: 'CAMERA MAKE',
-    field: 'make'
-  },
-  {
-    text: 'CAMERA MODEL',
-    field: 'model'
-  },
-  {
-    text: 'FOCAL LENGTH',
-    field: 'focal_length',
-    render(val){ return val + 'mm'}
-  },
-  {
-    text: 'ISO',
-    field: 'iso',
-  },
-  {
-    text: 'APERTURE',
-    field: 'aperture'
-  },
-  {
-    text: 'SHUTTER',
-    field: 'exposure_time',
-    render(val){ return val + 'S'}
-  }
-]
 
 class Exif extends Component {
   render() {
@@ -44,7 +16,7 @@ class Exif extends Component {
     return (
       <View className='exif'>
         {
-          ITEMS.map(item => {
+          EXIFS.map(item => {
             const { field, text, render } = item
             const value = exif[field]
             return (

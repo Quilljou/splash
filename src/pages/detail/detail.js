@@ -10,6 +10,7 @@ import { formatDate, abbreviateNumber } from '../../common/utils'
 import apis from '../../apis';
 import { RES_STATUS } from '../../common/constants'
 import Exif from './components/Exif'
+import Poster from './components/Poster'
 
 export default class Index extends Component {
   config = {
@@ -24,7 +25,8 @@ export default class Index extends Component {
       photo: {},
       showMeta: true,
       showOptional: false,
-      isActionSheetOpened: false
+      isActionSheetOpened: false,
+      showPoster: false
     }
   }
 
@@ -43,7 +45,9 @@ export default class Index extends Component {
         photo: {
           ...this.state.photo,
           ...photo,
-          marginTop
+          marginTop,
+          windowWidth,
+          windowHeight
         }
       })
     })
@@ -91,6 +95,12 @@ export default class Index extends Component {
     })
   }
 
+  closePoster() {
+    this.setState({
+      showPoster: false
+    })
+  }
+
   async downloadPhoto() {
     this.closeActionSheet()
     const { photo } = this.state
@@ -129,9 +139,16 @@ export default class Index extends Component {
     })
   }
 
+  handleShare() {
+    this.closeActionSheet()
+    this.setState({
+      showPoster: true
+    })
+  }
+
   render() {
     console.log('render,', this.state)
-    const { showMeta,showOptional, isActionSheetOpened, photo } = this.state;
+    const { showMeta,showOptional, isActionSheetOpened, photo, showPoster } = this.state;
     const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
     return (
       <View className='page-detail' style={{paddingTop: marginTop}}>
@@ -173,7 +190,7 @@ export default class Index extends Component {
                     <Text>{ this.formatDate(updated_at) }</Text>
                   </View>
                 </View>
-                <Image src={user.profile_image.small} className='author-avatar' />
+                <Image src={user.profile_image.medium} className='author-avatar' />
               </View>
             </View>
 
@@ -185,8 +202,11 @@ export default class Index extends Component {
             }
           </View>
         }
+        {
+          showPoster &&  <Poster onClose={this.closePoster} photo={photo}></Poster>
+        }
         <AtActionSheet isOpened={isActionSheetOpened} onClose={this.closeActionSheet}>
-          <AtActionSheetItem on>
+          <AtActionSheetItem onClick={this.handleShare}>
             分享
           </AtActionSheetItem>
           <AtActionSheetItem onClick={this.handlePreview}>

@@ -22,7 +22,7 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/detail/detail'
+      'pages/detail/detail',
     ],
     window: {
       backgroundTextStyle: 'light',

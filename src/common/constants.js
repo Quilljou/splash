@@ -11,9 +11,44 @@ const LOADING_STATUS = {
   NOMORE: 'NOMORE'
 };
 
+
+const EXIFS = [{
+    text: 'CAMERA MAKE',
+    field: 'make'
+  },
+  {
+    text: 'CAMERA MODEL',
+    field: 'model'
+  },
+  {
+    text: 'FOCAL LENGTH',
+    field: 'focal_length',
+    render(val) {
+      return val + 'mm'
+    }
+  },
+  {
+    text: 'ISO',
+    field: 'iso',
+  },
+  {
+    text: 'APERTURE',
+    field: 'aperture'
+  },
+  {
+    text: 'SHUTTER',
+    field: 'exposure_time',
+    render(val) {
+      return val + 'S'
+    }
+  }
+]
+
+
 export {
   APP_ID,
   API_URL,
   RES_STATUS,
-  LOADING_STATUS
+  LOADING_STATUS,
+  EXIFS
 }
