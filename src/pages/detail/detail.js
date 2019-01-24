@@ -139,6 +139,10 @@ export default class Index extends Component {
     })
   }
 
+  handlePhotoLoad(e) {
+    console.log(e)
+  }
+
   handleShare() {
     this.closeActionSheet()
     this.setState({
@@ -161,6 +165,7 @@ export default class Index extends Component {
             className='photos-item-image'
             mode='widthFix'
             src={regular}
+            onLoad={this.handlePhotoLoad}
           />
         </View>
         {
