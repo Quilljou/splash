@@ -1,15 +1,14 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Canvas, Button } from '@tarojs/components'
-import memoize from 'lodash/memoize'
+import { View, CoverView, Canvas } from '@tarojs/components'
+// import memoize from 'lodash/memoize'
 import './index.styl'
 import { EXIFS } from '../../../../common/constants'
 import { access } from '../../../../common/utils';
 
 export default class Poster extends Component {
-  constructor() {
-    // this.getSavaedTempPath = memoize(this.getSavaedTempPath)
+  static options = {
+    addGlobalClass: true
   }
-
   static canvasContext = null
   config = {
     navigationBarTitleText: '首页'
@@ -46,21 +45,18 @@ export default class Poster extends Component {
   async renderPoster(url, width, height) {
     if (this.canvasContext) return;
     const context = this.canvasContext = Taro.createCanvasContext('poster', this.$scope)
-    console.log(this.canvasContext)
-    const exif = {
-      aperture: "2.8",
-      exposure_time: "1/800",
-      focal_length: "56.0",
-      iso: 100,
-      make: "Canon",
-      model: "Canon EOS 6D"
-    }
+    const { photo } = this.props
+    const { exif } = photo
+
     const localPath = await this.loadImage(url);
-    if(!localPath) Taro.showToast('分享生成失败~')
+    if(!localPath) {
+      Taro.showToast('海报生成失败~')
+      this.canvasContext = null;
+    }
 
     const borderWidth = 10;
     context.setFillStyle('white')
-    context.fillRect(0, 0, width, height + 120)
+    context.fillRect(0, 0, width, height + 140)
     context.setLineWidth(borderWidth)
 
 
@@ -70,17 +66,28 @@ export default class Poster extends Component {
     const deltax = width / 2, deltay = 22
     for (let index = 0; index < EXIFS.length; index++) {
       const { text, render, field } = EXIFS[index];
-      const value = render ? render(exif[field]) : exif[field]
+      let value = (render ? render(exif[field]) : exif[field]) || '--'
       context.setFontSize(12)
       context.setFillStyle('#bbb')
       const x = !(index % 2) ? x1 : x1 + deltax
       const y = !(index % 2) ? y1 + index * deltay : y1 + (index - 1) * deltay
       context.fillText(text, x, y)
       context.setFontSize(20)
+      value = this.getEllipseText(context, value, deltax)
       context.setFillStyle('black')
       context.fillText(value,x, y + 20)
     }
     context.draw()
+  }
+
+  getEllipseText(context, value, maxWidth) {
+    if(context.measureText(value).width > maxWidth) {
+      while (context.measureText(value + '...').width > maxWidth) {
+        value = value.substring(0, value.length - 1)
+      }
+      return value + '...'
+    }
+    return value
   }
 
   getCanvasModalRect(windowWidth, pw, ph) {
@@ -131,6 +138,7 @@ export default class Poster extends Component {
     })
   }
 
+
   componentWillUnmount () {
     Taro.hideLoading()
   }
@@ -139,12 +147,25 @@ export default class Poster extends Component {
 
   componentDidHide () { }
 
+  async openActionSheet() {
+    const { tapIndex } = await Taro.showActionSheet({
+      itemList: ['保存', '不展示EXIF', '关闭'],
+    })
+    if(tapIndex == 0) {
+      this.handleSave()
+    }else if(tapIndex === 1){
+      // this.handleNoExif()
+    } else if(tapIndex === 2) {
+      this.props.onClose()
+    }
+  }
+
   render () {
     const { photo } = this.props
     const { urls, width, height, windowWidth } = photo
     if (!urls.regular) return null;
     const { cHeight, cWidth } = this.getCanvasModalRect(windowWidth, width, height)
-    const realHeight = cHeight + 40 + 100;
+    const realHeight = cHeight + 140;
 
     this.canvasStyle = {
       width: cWidth,
@@ -158,16 +179,16 @@ export default class Poster extends Component {
 
     return (
       <View className='poster'>
-        <View className='poster-modal'>
+        <View className='poster-modal' onLongPress={this.openActionSheet}>
           <View className='canvas-container' style={{height: realHeight + 'px', width: cWidth + 'px'}}>
             <Canvas canvasId='poster' className='poster-canvas' onError={this.logErrror}></Canvas>
           </View>
-          <View className='poster-opreation'>
-            <Button>不展示 EXIF</Button>
-            <Button onClick={this.handleShare} openType='share'>分享</Button>
-            <Button onClick={this.handleSave}>保存</Button>
-          </View>
         </View>
+        <CoverView className='poster-opreation' onClick={this.openActionSheet}>
+          <CoverView className='icon'></CoverView>
+          <CoverView className='icon'></CoverView>
+          <CoverView className='icon'></CoverView>
+        </CoverView>
       </View>
     )
   }

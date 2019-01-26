@@ -1,10 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components';
-import { AtActionSheet, AtActionSheetItem } from "taro-ui"
 import get from 'lodash.get'
 
 import './index.styl'
-import '../../stylesheets/action-sheet.css'
 import { getPaddingBottom } from '../../common/common'
 import { formatDate, abbreviateNumber } from '../../common/utils'
 import apis from '../../apis';
@@ -81,18 +79,16 @@ export default class Index extends Component {
     return formatDate(new Date(str), 'YYYY·MM·DD')
   }
 
-  openActionSheet(e) {
-    console.log(e)
-    e.stopPropagation();
-    this.setState({
-      isActionSheetOpened: true
+  async openActionSheet(e) {
+    e.stopPropagation && e.stopPropagation()
+    const { tapIndex }  = await Taro.showActionSheet({
+      itemList: ['生成海报','查看原图']
     })
-  }
-
-  closeActionSheet() {
-    this.setState({
-      isActionSheetOpened: false
-    })
+    if(tapIndex === 0) {
+      this.handleShare()
+    }else if(tapIndex === 1) {
+      this.handlePreview()
+    }
   }
 
   closePoster() {
@@ -102,7 +98,6 @@ export default class Index extends Component {
   }
 
   async downloadPhoto() {
-    this.closeActionSheet()
     const { photo } = this.state
     try {
       Taro.showLoading({
@@ -128,7 +123,6 @@ export default class Index extends Component {
   }
 
   handlePreview() {
-    this.closeActionSheet()
     const current = get(this.state.photo,'urls.full', undefined)
     if(!current) {
       return Taro.showToast({title: '预览失败'})
@@ -144,7 +138,6 @@ export default class Index extends Component {
   }
 
   handleShare() {
-    this.closeActionSheet()
     this.setState({
       showPoster: true
     })
@@ -152,7 +145,7 @@ export default class Index extends Component {
 
   render() {
     console.log('render,', this.state)
-    const { showMeta,showOptional, isActionSheetOpened, photo, showPoster } = this.state;
+    const { showMeta,showOptional, photo, showPoster } = this.state;
     const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
     return (
       <View className='page-detail' style={{paddingTop: marginTop}}>
@@ -210,17 +203,6 @@ export default class Index extends Component {
         {
           showPoster &&  <Poster onClose={this.closePoster} photo={photo}></Poster>
         }
-        <AtActionSheet isOpened={isActionSheetOpened} onClose={this.closeActionSheet}>
-          <AtActionSheetItem onClick={this.handleShare}>
-            分享
-          </AtActionSheetItem>
-          <AtActionSheetItem onClick={this.handlePreview}>
-            查看原图
-          </AtActionSheetItem>
-          <AtActionSheetItem onClick={this.downloadPhoto}>
-            下载
-          </AtActionSheetItem>
-        </AtActionSheet>
       </View>
     )
   }

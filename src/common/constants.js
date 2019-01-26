@@ -24,7 +24,7 @@ const EXIFS = [{
     text: 'FOCAL LENGTH',
     field: 'focal_length',
     render(val) {
-      return val + 'mm'
+      return val ? val + 'mm' : val
     }
   },
   {
@@ -39,7 +39,7 @@ const EXIFS = [{
     text: 'SHUTTER',
     field: 'exposure_time',
     render(val) {
-      return val + 'S'
+      return val ? val + 'S' : val
     }
   }
 ]
