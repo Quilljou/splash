@@ -92,12 +92,14 @@ export default class Index extends Component {
   render () {
     const { photoStore: { photos, currentPhotoList } } = this.props
     const currentPhotoListIndex = this.currentPhotoListIndex
+    const scrollIntoView = currentPhotoListIndex < 3 ? tabs[0].value : tabs[currentPhotoListIndex - 2].value
+    console.log(scrollIntoView)
     return (
       <View className='index'>
         <ScrollView
           scroll-x
           className='tabs'
-          scrollIntoView={`ID${currentPhotoList}`}
+          scrollIntoView={`ID${scrollIntoView}`}
           scrollWithAnimation
         >
           {tabs.map(tab => {
