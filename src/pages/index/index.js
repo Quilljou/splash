@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Swiper, SwiperItem } from '@tarojs/components'
+import { View, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
 import classnames from 'classnames'
 import { inject, observer }  from '@tarojs/mobx'
 import './index.styl'
@@ -94,12 +94,18 @@ export default class Index extends Component {
     const currentPhotoListIndex = this.currentPhotoListIndex
     return (
       <View className='index'>
-        <View className='tabs'>
+        <ScrollView
+          scroll-x
+          className='tabs'
+          scrollIntoView={`ID${currentPhotoList}`}
+          scrollWithAnimation
+        >
           {tabs.map(tab => {
             return (
               <View key={
                 tab.value
               }
+                id={`ID${tab.value}`}
                 className={classnames('tabs-item',{'tabs-item_selected': currentPhotoList === tab.value})}
                 onClick={this.changeTab.bind(this, tab)}
               > {
@@ -107,7 +113,7 @@ export default class Index extends Component {
               } </View>
             )
           })}
-        </View>
+        </ScrollView>
         <Swiper current={currentPhotoListIndex} onChange={this.onSwipeChange} className='photos-swiper'>
           {tabs.map(tab => {
             let { loadingStatus, list, page } = photos[tab.value]
