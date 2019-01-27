@@ -82,7 +82,7 @@ export default class Index extends Component {
   async openActionSheet(e) {
     e.stopPropagation && e.stopPropagation()
     const { tapIndex }  = await Taro.showActionSheet({
-      itemList: ['生成海报','查看原图']
+      itemList: ['生成海报','原图下载']
     })
     if(tapIndex === 0) {
       this.handleShare()
@@ -153,6 +153,7 @@ export default class Index extends Component {
           style={{ 'padding-bottom': paddingBottom }}
           className='photos-item'
           onClick={this.toggleMeta}
+          onLongPress={this.openActionSheet}
         >
           <Image
             className='photos-item-image'

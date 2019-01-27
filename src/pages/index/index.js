@@ -101,9 +101,7 @@ export default class Index extends Component {
                 tab.value
               }
                 className={classnames('tabs-item',{'tabs-item_selected': currentPhotoList === tab.value})}
-                onClick={
-                this.changeTab.bind(this, tab)
-              }
+                onClick={this.changeTab.bind(this, tab)}
               > {
                 tab.name
               } </View>
@@ -112,7 +110,7 @@ export default class Index extends Component {
         </View>
         <Swiper current={currentPhotoListIndex} onChange={this.onSwipeChange} className='photos-swiper'>
           {tabs.map(tab => {
-            let { loadingStatus, list } = photos[tab.value]
+            let { loadingStatus, list, page } = photos[tab.value]
             return (
             <SwiperItem key={tab.value}>
               <PhotoList
@@ -122,6 +120,7 @@ export default class Index extends Component {
                 loadingStatus={loadingStatus}
                 onReachBottom={this.onReachBottom}
                 onRetry={this.handleRetry}
+                showMainLoading={loadingStatus === LOADING_STATUS.LOADING && page === 1}
               />
             </SwiperItem>
           )})}

@@ -6,10 +6,25 @@ import { EXIFS } from '../../../../common/constants'
 import { access } from '../../../../common/utils';
 
 export default class Poster extends Component {
+  constructor(props) {
+    super(props)
+    const { photo } = props
+    const { urls, width, height, windowWidth } = photo
+    if (!urls.regular) return null;
+    const { height: pHeight, width: pWidth } = this.getPhotoRect(windowWidth, width, height)
+    const realHeight = pHeight + 140;
+    this.state = {
+      pHeight,
+      pWidth,
+      realHeight,
+      showExif: true
+    }
+  }
+
   static options = {
     addGlobalClass: true
   }
-  static canvasContext = null
+
   config = {
     navigationBarTitleText: '首页'
   }
@@ -20,13 +35,50 @@ export default class Poster extends Component {
     }
   }
 
-  componentWillMount () { }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(arguments)
+  }
+
+  componentWillUnmount() {
+    Taro.hideLoading()
+  }
+
+  componentDidShow() {}
+
+  componentDidHide() {}
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.showExif !== this.props.showExif) {
+      const url = access(this.props, 'photo.urls.regular')
+      let { pHeight, pWidth, realHeight } = this.state
+      if(!this.props.showExif) {
+        realHeight = pHeight
+      }
+      this.renderPoster(url, pWidth, pHeight, realHeight);
+    }
+  }
+
+
+  componentWillMount () {
+
+  }
 
   componentWillReact () {
     console.log('componentWillReact')
   }
 
-  componentDidMount () {}
+  componentDidMount () {
+    const url = access(this.props, 'photo.urls.regular')
+    const {
+          pHeight,
+          pWidth,
+          realHeight
+        } = this.state
+    if (url) {
+      this.renderPoster(url, pWidth, pHeight, realHeight);
+    }
+  }
 
   async loadImage(src) {
     Taro.showLoading({
@@ -42,13 +94,14 @@ export default class Poster extends Component {
     }
   }
 
-  async renderPoster(url, width, height) {
+  async renderPoster(url, width, height, realHeight) {
     if (this.canvasContext) return;
     const context = this.canvasContext = Taro.createCanvasContext('poster', this.$scope)
     const { photo } = this.props
     const { exif } = photo
 
     const localPath = await this.loadImage(url);
+
     if(!localPath) {
       Taro.showToast('海报生成失败~')
       this.canvasContext = null;
@@ -56,26 +109,29 @@ export default class Poster extends Component {
 
     const borderWidth = 10;
     context.setFillStyle('white')
-    context.fillRect(0, 0, width, height + 140)
+    context.fillRect(0, 0, width, realHeight)
     context.setLineWidth(borderWidth)
 
 
     context.drawImage(localPath, borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2)
-    context.font = "10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
-    const x1 = borderWidth, y1 = height + 15
-    const deltax = width / 2, deltay = 22
-    for (let index = 0; index < EXIFS.length; index++) {
-      const { text, render, field } = EXIFS[index];
-      let value = (render ? render(exif[field]) : exif[field]) || '--'
-      context.setFontSize(12)
-      context.setFillStyle('#bbb')
-      const x = !(index % 2) ? x1 : x1 + deltax
-      const y = !(index % 2) ? y1 + index * deltay : y1 + (index - 1) * deltay
-      context.fillText(text, x, y)
-      context.setFontSize(20)
-      value = this.getEllipseText(context, value, deltax)
-      context.setFillStyle('black')
-      context.fillText(value,x, y + 20)
+
+    if(this.state.showExif) {
+      context.font = "10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
+      const x1 = borderWidth, y1 = height + 15
+      const deltax = width / 2 - 10, deltay = 22
+      for (let index = 0; index < EXIFS.length; index++) {
+        const { text, render, field } = EXIFS[index];
+        let value = (render ? render(exif[field]) : exif[field]) || '--'
+        context.setFontSize(12)
+        context.setFillStyle('#bbb')
+        const x = !(index % 2) ? x1 : x1 + deltax
+        const y = !(index % 2) ? y1 + index * deltay : y1 + (index - 1) * deltay
+        context.fillText(text, x, y)
+        context.setFontSize(20)
+        value = this.getEllipseText(context, value, deltax)
+        context.setFillStyle('black')
+        context.fillText(value,x, y + 20)
+      }
     }
     context.draw()
   }
@@ -90,14 +146,15 @@ export default class Poster extends Component {
     return value
   }
 
-  getCanvasModalRect(windowWidth, pw, ph) {
-    const cWidth = windowWidth * 0.9;
-    const cHeight = cWidth / pw * ph
+  getPhotoRect(windowWidth, pw, ph) {
+    const width = windowWidth * 0.9;
+    const height = width / pw * ph
     return {
-      cWidth,
-      cHeight
+      width,
+      height
     }
   }
+
   logErrror(e) {
     console.log(e)
   }
@@ -138,52 +195,37 @@ export default class Poster extends Component {
     })
   }
 
-
-  componentWillUnmount () {
-    Taro.hideLoading()
+  toggleExif() {
+    this.setState({
+      showExif: !this.state.showExif
+    })
   }
 
-  componentDidShow () { }
-
-  componentDidHide () { }
 
   async openActionSheet() {
+    const { showExif } = this.state
     const { tapIndex } = await Taro.showActionSheet({
-      itemList: ['保存', '不展示EXIF', '关闭'],
+      itemList: ['保存', `${showExif ? '不' : ''}展示EXIF`, '关闭'],
     })
     if(tapIndex == 0) {
       this.handleSave()
     }else if(tapIndex === 1){
-      // this.handleNoExif()
+      this.toggleExif()
     } else if(tapIndex === 2) {
       this.props.onClose()
     }
   }
 
   render () {
-    const { photo } = this.props
-    const { urls, width, height, windowWidth } = photo
-    if (!urls.regular) return null;
-    const { cHeight, cWidth } = this.getCanvasModalRect(windowWidth, width, height)
-    const realHeight = cHeight + 140;
-
-    this.canvasStyle = {
-      width: cWidth,
-      height: realHeight
+    let { pWidth, realHeight, pHeight, showExif } = this.state
+    if(!showExif) {
+      realHeight = pHeight
     }
-
-    const url = access(this.props, 'photo.urls.regular')
-    if (url) {
-      this.renderPoster(url, cWidth, cHeight, realHeight);
-    }
-
     return (
       <View className='poster'>
-        <View className='poster-modal' onLongPress={this.openActionSheet}>
-          <View className='canvas-container' style={{height: realHeight + 'px', width: cWidth + 'px'}}>
-            <Canvas canvasId='poster' className='poster-canvas' onError={this.logErrror}></Canvas>
-          </View>
-        </View>
+        {/* <View className='poster-modal' > */}
+        <Canvas canvasId='poster' onLongPress={this.openActionSheet} className='poster-canvas' onError={this.logErrror}  style={{height: realHeight + 'px', width: pWidth + 'px'}}></Canvas>
+        {/* </View> */}
         <CoverView className='poster-opreation' onClick={this.openActionSheet}>
           <CoverView className='icon'></CoverView>
           <CoverView className='icon'></CoverView>

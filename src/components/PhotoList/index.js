@@ -1,13 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
 import PropTypes from 'prop-types';
 import classnames from 'classnames'
-import { PropTypes as MobxPropTypes} from '@tarojs/mobx-prop-types'
 import { ScrollView, View } from '@tarojs/components'
 import { LOADING_STATUS } from '../../common/constants'
 import './index.styl'
 import PhotoItem from '../PhotoItem'
+import Loader from '../Loader'
 
-console.log(MobxPropTypes)
 const LOADING_TEXT = '载入中...'
 
 class PhotoList extends Component {
@@ -30,7 +29,8 @@ class PhotoList extends Component {
     onRetry: PropTypes.func,
     onSwipe: PropTypes.func,
     onScroll: PropTypes.func,
-    showTopLoading: PropTypes.bool
+    showTopLoading: PropTypes.bool,
+    showMainLoading: PropTypes.bool
   }
 
   static options = {
@@ -39,7 +39,7 @@ class PhotoList extends Component {
 
 
   render() {
-    const { externalClass, onReachTop, onReachBottom, onScroll, showTopLoading, loadingStatus, list, onRetry } = this.props
+    const { externalClass, onReachTop, onReachBottom, onScroll, showMainLoading, loadingStatus, list, onRetry } = this.props
 
     return (
       <ScrollView
@@ -54,11 +54,12 @@ class PhotoList extends Component {
         onScrollToLower={onReachBottom}
         onScroll={onScroll}
       >
-        {showTopLoading && <View>{LOADING_TEXT}</View>}
         {
           list.length ? list.map(photo => <PhotoItem photo={photo} key={photo.id}  />) : null
         }
-        <View className='loading-status'>
+        {
+          showMainLoading ? <Loader /> :
+          <View className='loading-status'>
           {
             loadingStatus === LOADING_STATUS.LOADING ? LOADING_TEXT : null
           }
@@ -69,6 +70,7 @@ class PhotoList extends Component {
             loadingStatus === LOADING_STATUS.NOMORE ? '没有更多了' : null
           }
         </View>
+        }
       </ScrollView>
     )
   }

@@ -87,6 +87,7 @@ const photoStore = observable({
 
   changeTab(value) {
     this.currentPhotoList = value
+    if(this.photos[value].list.length > 0) return
     this.loadPhotos()
   }
 
