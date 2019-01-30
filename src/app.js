@@ -23,13 +23,14 @@ class App extends Component {
     pages: [
       'pages/index/index',
       'pages/detail/detail',
+      'pages/search/index',
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black',
-      // navigationStyle: 'custom'
+      navigationStyle: 'custom'
     }
   }
 

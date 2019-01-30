@@ -9,6 +9,7 @@ import apis from '../../apis';
 import { RES_STATUS } from '../../common/constants'
 import Exif from './components/Exif'
 import Poster from './components/Poster'
+import NavBar from '../../components/Navbar'
 
 export default class Index extends Component {
   config = {
@@ -148,62 +149,65 @@ export default class Index extends Component {
     const { showMeta,showOptional, photo, showPoster } = this.state;
     const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
     return (
-      <View className='page-detail' style={{paddingTop: marginTop}}>
-        <View
-          style={{ 'padding-bottom': paddingBottom }}
-          className='photos-item'
-          onClick={this.toggleMeta}
-          onLongPress={this.openActionSheet}
-        >
-          <Image
-            className='photos-item-image'
-            mode='widthFix'
-            src={regular}
-            onLoad={this.handlePhotoLoad}
-          />
-        </View>
-        {
-          showMeta && exif &&
-          <View className='meta' onClick={this.showMoreDetail}>
-
-            <View className='reuired'>
-              <View className='social'>
-                <View className='social-left'>
-                  <Text className='iconfont icon-yueduliang'></Text>
-                  <Text className='count'>{abbreviateNumber(views)}</Text>
-                  <Text className='iconfont icon-dianzan'></Text>
-                  <Text className='count'>{abbreviateNumber(likes)}</Text>
-                </View>
-                <View className='social-right'>
-                  <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
-                </View>
-              </View>
-
-              <View className='author'>
-                <View>
-                  <View>
-                    By<Text className='author-name'>{ ` ${user.name}` }</Text>
-                  </View>
-                  <View className='local-time'>
-                    { user.location ? <Text>{ `@ ${user.location} ` }</Text> : null}
-                    <Text>{ this.formatDate(updated_at) }</Text>
-                  </View>
-                </View>
-                <Image src={user.profile_image.medium} className='author-avatar' />
-              </View>
-            </View>
-
-            {
-              showOptional &&
-                <View className='optional'>
-                  <Exif exif={exif}></Exif>
-                </View>
-            }
+      <View className='page-detail'>
+        <NavBar showBack></NavBar>
+        <View style={{paddingTop: marginTop}}>
+          <View
+            style={{ 'padding-bottom': paddingBottom }}
+            className='photos-item'
+            onClick={this.toggleMeta}
+            onLongPress={this.openActionSheet}
+          >
+            <Image
+              className='photos-item-image'
+              mode='widthFix'
+              src={regular}
+              onLoad={this.handlePhotoLoad}
+            />
           </View>
-        }
-        {
-          showPoster &&  <Poster onClose={this.closePoster} photo={photo}></Poster>
-        }
+          {
+            showMeta && exif &&
+            <View className='meta' onClick={this.showMoreDetail}>
+
+              <View className='reuired'>
+                <View className='social'>
+                  <View className='social-left'>
+                    <Text className='iconfont icon-yueduliang'></Text>
+                    <Text className='count'>{abbreviateNumber(views)}</Text>
+                    <Text className='iconfont icon-dianzan'></Text>
+                    <Text className='count'>{abbreviateNumber(likes)}</Text>
+                  </View>
+                  <View className='social-right'>
+                    <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
+                  </View>
+                </View>
+
+                <View className='author'>
+                  <View>
+                    <View>
+                      By<Text className='author-name'>{ ` ${user.name}` }</Text>
+                    </View>
+                    <View className='local-time'>
+                      { user.location ? <Text>{ `@ ${user.location} ` }</Text> : null}
+                      <Text>{ this.formatDate(updated_at) }</Text>
+                    </View>
+                  </View>
+                  <Image src={user.profile_image.medium} className='author-avatar' />
+                </View>
+              </View>
+
+              {
+                showOptional &&
+                  <View className='optional'>
+                    <Exif exif={exif}></Exif>
+                  </View>
+              }
+            </View>
+          }
+          {
+            showPoster &&  <Poster onClose={this.closePoster} photo={photo}></Poster>
+          }
+        </View>
       </View>
     )
   }

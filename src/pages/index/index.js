@@ -1,11 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
+import { View, ScrollView, Swiper, SwiperItem, Text } from '@tarojs/components'
 import classnames from 'classnames'
 import { inject, observer }  from '@tarojs/mobx'
 import './index.styl'
 import { LOADING_STATUS } from '../../common/constants'
 import PhotoList from '../../components/PhotoList';
 import tabs from '../../common/tabs'
+import NavBar from '../../components/Navbar'
 
 @inject('photoStore')
 @observer
@@ -89,13 +90,27 @@ export default class Index extends Component {
     photoStore.changeTab(tabs[index].value)
   }
 
+  goSearch() {
+    Taro.navigateTo({
+      url: '/pages/search/index'
+    })
+  }
+
+  goCenter() {
+
+  }
+
   render () {
     const { photoStore: { photos, currentPhotoList } } = this.props
     const currentPhotoListIndex = this.currentPhotoListIndex
     const scrollIntoView = currentPhotoListIndex < 3 ? tabs[0].value : tabs[currentPhotoListIndex - 2].value
-    console.log(scrollIntoView)
+
     return (
-      <View className='index'>
+      <View className='index page'>
+        <NavBar title='首页' useChildren>
+          <Text className='iconfont icon-sousuo5' onClick={this.goSearch}></Text>
+          <Text className='iconfont icon-wode' onClick={this.goCenter}></Text>
+        </NavBar>
         <ScrollView
           scroll-x
           className='tabs'
