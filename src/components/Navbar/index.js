@@ -39,7 +39,6 @@ class Navbar extends Component {
   }
 
   render() {
-    console.log('navbar render')
     const { statusBarHeight, titleBarHeight } = this.state
     const { title, showBack, useChildren } = this.props
 

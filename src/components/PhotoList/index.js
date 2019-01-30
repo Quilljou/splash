@@ -16,13 +16,13 @@ class PhotoList extends Component {
 
   static defaultProps = {
     onScroll: _ => _,
-    loadingStaus: LOADING_STATUS.LOADING
+    loadingStatus: LOADING_STATUS.LOADING
   }
 
   static propTypes = {
     list: PropTypes.array,
     height: PropTypes.string,
-    loadingStaus: PropTypes.oneOf(Object.values(LOADING_STATUS)),
+    loadingStatus: PropTypes.oneOf(Object.values(LOADING_STATUS)),
     className: PropTypes.string,
     onReachBottom: PropTypes.func,
     onReachTop: PropTypes.func,
@@ -40,7 +40,6 @@ class PhotoList extends Component {
 
   render() {
     const { externalClass, onReachTop, onReachBottom, onScroll, showMainLoading, loadingStatus, list, onRetry } = this.props
-
     return (
       <ScrollView
         enableBackToTop
@@ -60,16 +59,16 @@ class PhotoList extends Component {
         {
           showMainLoading ? <Loader /> :
           <View className='loading-status'>
-          {
-            loadingStatus === LOADING_STATUS.LOADING ? LOADING_TEXT : null
-          }
-          {
-            loadingStatus === LOADING_STATUS.FAILED  ? <View onClick={onRetry}> 加载失败, 点击重试 </View> : null
-          }
-          {
-            loadingStatus === LOADING_STATUS.NOMORE ? '没有更多了' : null
-          }
-        </View>
+            {
+              (loadingStatus === LOADING_STATUS.LOADING || loadingStatus === LOADING_STATUS.OK) && LOADING_TEXT
+            }
+            {
+              loadingStatus === LOADING_STATUS.FAILED  ? <View onClick={onRetry}> 加载失败, 点击重试 </View> : null
+            }
+            {
+              loadingStatus === LOADING_STATUS.NOMORE ? '没有更多了' : null
+            }
+          </View>
         }
       </ScrollView>
     )

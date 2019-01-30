@@ -43,6 +43,7 @@ class Unsplash {
        });
 
        if(query) {
+         query._t = Date.now()
          _url = `${_url}?${stringify(query)}`
        }
 
@@ -58,6 +59,15 @@ class Unsplash {
             data: null
           }
        })
+  }
+
+  translate(query) {
+    query = encodeURIComponent(query)
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh&tl=en&dt=t&q=${query}`
+    return this.request({
+      url,
+      oauth: true
+    })
   }
 }
 

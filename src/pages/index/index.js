@@ -48,16 +48,15 @@ export default class Index extends Component {
     const { photoStore } = this.props
     const { currentPhotoList, photos } = photoStore
     const selectedPhotos = photos[currentPhotoList]
-    let {
-      loadingStatus,
-      page
-    } = selectedPhotos
+    let { loadingStatus, page } = selectedPhotos
     if(loadingStatus !== LOADING_STATUS.OK) return;
+
     const nextList = {
       [currentPhotoList]: {
         ...selectedPhotos,
         ...{
-          page: ++page
+          page: ++page,
+          loadingStatus: LOADING_STATUS.LOADING
         }
       }
     }
@@ -106,10 +105,10 @@ export default class Index extends Component {
     const scrollIntoView = currentPhotoListIndex < 3 ? tabs[0].value : tabs[currentPhotoListIndex - 2].value
 
     return (
-      <View className='index page'>
+      <View className='index full-page'>
         <NavBar title='首页' useChildren>
-          <Text className='iconfont icon-sousuo5' onClick={this.goSearch}></Text>
           <Text className='iconfont icon-wode' onClick={this.goCenter}></Text>
+          <Text className='iconfont icon-sousuo5' onClick={this.goSearch}></Text>
         </NavBar>
         <ScrollView
           scroll-x
@@ -131,14 +130,19 @@ export default class Index extends Component {
             )
           })}
         </ScrollView>
-        <Swiper current={currentPhotoListIndex} onChange={this.onSwipeChange} className='photos-swiper'>
+        <Swiper current={currentPhotoListIndex}
+          onChange={this.onSwipeChange}
+          className='flex-1'
+        >
           {tabs.map(tab => {
             let { loadingStatus, list, page } = photos[tab.value]
+            if (currentPhotoList === tab.value) {
+              console.log(loadingStatus)
+            }
             return (
             <SwiperItem key={tab.value}>
               <PhotoList
                 list={list.slice()}
-                skipHiddenItemLayout
                 externalClass='photos'
                 loadingStatus={loadingStatus}
                 onReachBottom={this.onReachBottom}
