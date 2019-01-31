@@ -1,11 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
+import get from 'lodash.get'
+
 import './index.styl'
 import NavBar from '../../components/Navbar'
 import Auth from '../../components/Auth'
 import api from '../../apis'
 import { RES_STATUS, STORAGE_KEYS } from '../../common/constants';
-import get from 'lodash.get'
 
 export default class Index extends Component {
   constructor(props) {
@@ -35,7 +36,7 @@ export default class Index extends Component {
 
   async componentDidMount() {
     const scope = 'scope.userInfo'
-    this.getRandomBg()
+    setTimeout(this.getRandomBg.bind(this),1000)
     const { authSetting } = await Taro.getSetting()
     if (!authSetting[scope]) {
       return this.showAuthPopup()
@@ -87,6 +88,20 @@ export default class Index extends Component {
     }, {})
   }
 
+  goAd(){
+    Taro.showModal({
+      content: '分享给更多好友就能看广告了'
+    })
+  }
+
+  goPoster() {
+
+  }
+
+  goDetail() {
+
+  }
+
   render() {
     let { userInfo, showAuth, backgroundImage } = this.state
     userInfo = this.prettyUserInfo(userInfo)
@@ -94,7 +109,7 @@ export default class Index extends Component {
     return (
       <View className='full-page'>
         <NavBar showBack obviousBack />
-        <View className='header' style={{backgroundImage: `url(${backgroundImage})`}} onClick={this.getRandomBg}></View>
+        <View className='header' style={{backgroundImage: `url(${backgroundImage})`}} onClick={this.getRandomBg} onLongPress={this.goDetail}></View>
         <View className='body'>
           <View className='userinfo'>
             <Image
@@ -105,8 +120,9 @@ export default class Index extends Component {
             <View className='location'>{ country } · { city }</View>
           </View>
           <View className='list'>
-            <View>海报生成</View>
-            <View>看广告</View>
+            <View className='list-item' onClick={this.goPoster}>海报生成</View>
+            <View className='list-item' onClick={this.goAd}>看广告</View>
+            <View className='list-item' onClick={this.goFeedback}>意见反馈</View>
           </View>
         </View>
         {
