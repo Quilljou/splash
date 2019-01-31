@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { View, Image, Button } from '@tarojs/components'
 import get from 'lodash.get'
 
 import './index.styl'
@@ -122,7 +122,9 @@ export default class Index extends Component {
           <View className='list'>
             <View className='list-item' onClick={this.goPoster}>海报生成</View>
             <View className='list-item' onClick={this.goAd}>看广告</View>
-            <View className='list-item' onClick={this.goFeedback}>意见反馈</View>
+            <View className='list-item' onClick={this.goFeedback}>
+              <Button openType='feedback' className='btn-feedback'>您的建议</Button>
+            </View>
           </View>
         </View>
         {
