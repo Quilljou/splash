@@ -96,7 +96,9 @@ export default class Index extends Component {
   }
 
   goCenter() {
-
+    Taro.navigateTo({
+      url: '/pages/center/index'
+    })
   }
 
   render () {
@@ -107,7 +109,7 @@ export default class Index extends Component {
     return (
       <View className='index full-page'>
         <NavBar title='首页' useChildren>
-          <Text className='iconfont icon-wode' onClick={this.goCenter}></Text>
+          <Text className='iconfont icon-inbox' onClick={this.goCenter}></Text>
           <Text className='iconfont icon-sousuo5' onClick={this.goSearch}></Text>
         </NavBar>
         <ScrollView

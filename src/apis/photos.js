@@ -95,6 +95,38 @@ class Photos {
       header
     })
   }
+
+  getRandomPhoto(options = {}){
+    const url = "/photos/random";
+    const category = options.category || [];
+    const collections = options.collections || [];
+
+    const query = {
+      featured: options.featured,
+      username: options.username,
+      orientation: options.orientation,
+      category: category.join(),
+      collections: collections.join(),
+      query: options.query,
+      w: options.width,
+      h: options.height,
+      c: options.cacheBuster || new Date().getTime(), // Avoid ajax response caching
+      count: options.count
+    }
+
+    Object.keys(query).forEach(key => {
+      if (!query[key]) {
+        delete query[key];
+      }
+    });
+
+    return this.request({
+      url,
+      method: "GET",
+      query
+    });
+  }
+
 }
 
 export default Photos;

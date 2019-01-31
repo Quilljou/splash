@@ -1,5 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components';
+import PropTypes from 'prop-types';
+import classnames from 'classnames'
 import './index.styl'
 
 class Navbar extends Component {
@@ -16,6 +18,10 @@ class Navbar extends Component {
 
   static options = {
     addGlobalClass: true
+  }
+
+  static propTypes = {
+    obviousBack: PropTypes.bool
   }
 
   goBack() {
@@ -40,10 +46,10 @@ class Navbar extends Component {
 
   render() {
     const { statusBarHeight, titleBarHeight } = this.state
-    const { title, showBack, useChildren } = this.props
+    const { title, showBack, useChildren, obviousBack } = this.props
 
     const defaultContent = <View className='titlebar'>
-      {showBack && <Text className='iconfont icon-fanhui' onClick={this.goBack}></Text>}
+      {showBack && <Text className={classnames(['iconfont icon-fanhui', {obvious: obviousBack}])} onClick={this.goBack}></Text>}
       {title && <Text className='titlebar-title'>{title}</Text>}
     </View>
 

@@ -44,11 +44,16 @@ const EXIFS = [{
   }
 ]
 
+const STORAGE_KEYS = {
+  CENTER_BG: 'center_bg'
+}
+
 
 export {
   APP_ID,
   API_URL,
   RES_STATUS,
   LOADING_STATUS,
-  EXIFS
+  EXIFS,
+  STORAGE_KEYS
 }

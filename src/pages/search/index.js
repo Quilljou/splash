@@ -1,12 +1,11 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Text, Input } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import NavBar from '../../components/Navbar'
 import SearchBar from './components/Searchbar'
 import api from '../../apis'
 import './index.styl'
 import { RES_STATUS, LOADING_STATUS } from '../../common/constants';
 import PhotoList from '../../components/PhotoList'
-import get from 'lodash.get'
 
 class Index extends Component {
   config = {
@@ -116,7 +115,6 @@ class Index extends Component {
 
   render () {
     const { query, results, loadingStatus, page, dirty } = this.state
-    console.log(loadingStatus)
     return (
       <View className='page-search full-page'>
         <NavBar
