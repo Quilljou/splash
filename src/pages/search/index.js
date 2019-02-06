@@ -1,5 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
+import get from 'lodash.get'
+
 import NavBar from '../../components/Navbar'
 import SearchBar from './components/Searchbar'
 import api from '../../apis'

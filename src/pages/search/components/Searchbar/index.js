@@ -40,6 +40,7 @@ class Index extends Component {
     this.setState({
       focused: false
     })
+    // Taro.hideKeyboard()
   }
 
   handleFoucs() {
@@ -67,6 +68,8 @@ class Index extends Component {
           onFocus={this.handleFoucs}
           onBlur={this.handleBlur}
           onInput={this.handleInput}
+          onConfirm={this.handleSearch}
+          confirmType='search'
         />
         <Text className='iconfont icon-sousuo5' onClick={this.handleSearch}></Text>
       </View>

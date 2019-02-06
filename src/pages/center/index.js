@@ -7,6 +7,7 @@ import NavBar from '../../components/Navbar'
 import Auth from '../../components/Auth'
 import api from '../../apis'
 import { RES_STATUS, STORAGE_KEYS } from '../../common/constants';
+import { debounce } from '../../common/utils'
 
 export default class Index extends Component {
   constructor(props) {
@@ -32,6 +33,8 @@ export default class Index extends Component {
         city: ''
       }
     }
+
+    this.debouncedRandomBg = debounce(this.getRandomBg)
   }
 
   async componentDidMount() {
@@ -109,19 +112,27 @@ export default class Index extends Component {
     return (
       <View className='full-page'>
         <NavBar showBack obviousBack />
-        <View className='header' style={{backgroundImage: `url(${backgroundImage})`}} onClick={this.getRandomBg} onLongPress={this.goDetail}></View>
+        <View className='header'
+          style={{backgroundImage: `url(${backgroundImage})`}}
+          onClick={this.debouncedRandomBg}
+          onLongPress={this.goDetail}
+        >
+          <View className='header-mask'></View>
+        </View>
         <View className='body'>
           <View className='userinfo'>
+            <View className='drop-shadow'></View>
             <Image
               className='avatar'
               src={avatarUrl}
             />
             <View className='name'>{nickName}</View>
-            <View className='location'>{ country } · { city }</View>
+            <View className='location'>{ country }{` · `}{ city }</View>
           </View>
           <View className='list'>
             <View className='list-item' onClick={this.goPoster}>海报生成</View>
             <View className='list-item' onClick={this.goAd}>看广告</View>
+            <View className='list-item' onClick={this.goAd}>设置</View>
             <View className='list-item' onClick={this.goFeedback}>
               <Button openType='feedback' className='btn-feedback'>您的建议</Button>
             </View>

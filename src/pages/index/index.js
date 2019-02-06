@@ -109,8 +109,10 @@ export default class Index extends Component {
     return (
       <View className='index full-page'>
         <NavBar title='首页' useChildren>
-          <Text className='iconfont icon-inbox' onClick={this.goCenter}></Text>
-          <Text className='iconfont icon-sousuo5' onClick={this.goSearch}></Text>
+          <View className='titlebar'>
+            <Text className='iconfont icon-inbox' onClick={this.goCenter}></Text>
+            <Text className='iconfont icon-sousuo5' onClick={this.goSearch}></Text>
+          </View>
         </NavBar>
         <ScrollView
           scroll-x

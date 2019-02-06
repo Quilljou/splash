@@ -1,3 +1,5 @@
+import { func } from "prop-types";
+
 function pick(obj, ...list) {
     return Object.keys(obj)
         .filter(key => list.includes(key))
@@ -83,9 +85,28 @@ function abbreviateNumber(value) {
 }
 
 
+function debounce(fn, time = 350) {
+  let timer = null;
+  return function () {
+    var context = this;
+    var args = arguments;
+    clearTimeout(timer);
+    timer = null;
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, time)
+  }
+}
+
+function throttle() {
+
+}
+
 export {
   pick,
   access,
   formatDate,
-  abbreviateNumber
+  abbreviateNumber,
+  debounce,
+  throttle
 };

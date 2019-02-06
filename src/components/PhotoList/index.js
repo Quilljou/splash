@@ -39,7 +39,10 @@ class PhotoList extends Component {
 
 
   render() {
-    const { externalClass, onReachTop, onReachBottom, onScroll, showMainLoading, loadingStatus, list, onRetry } = this.props
+    let { externalClass, onReachTop, onReachBottom, onScroll, showMainLoading, loadingStatus, list, onRetry } = this.props
+    if(list.length === 0) {
+      loadingStatus = LOADING_STATUS.NOMORE
+    }
     return (
       <ScrollView
         enableBackToTop
@@ -60,7 +63,7 @@ class PhotoList extends Component {
           showMainLoading ? <Loader /> :
           <View className='loading-status'>
             {
-              (loadingStatus === LOADING_STATUS.LOADING || loadingStatus === LOADING_STATUS.OK) && LOADING_TEXT
+              (loadingStatus === LOADING_STATUS.LOADING || loadingStatus === LOADING_STATUS.OK) ? LOADING_TEXT : null
             }
             {
               loadingStatus === LOADING_STATUS.FAILED  ? <View onClick={onRetry}> 加载失败, 点击重试 </View> : null

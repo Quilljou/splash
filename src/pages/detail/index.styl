@@ -21,7 +21,11 @@
   background-color: rgba(#000,0.4)
   padding: 18px 24px;
   box-sizing: border-box
+  transform: translate3d(0, 100%, 0);
+  transition: transform 150ms ease-in
 
+  &.slideShow
+    transform: translate3d(0, 0, 0);
 
 .author,
 .social

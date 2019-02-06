@@ -23,7 +23,6 @@ class PhotoItem extends Component {
     const paddingBottom = getPaddingBottom(height, width)
     return (
       <View
-        style={{ 'padding-bottom': paddingBottom }}
         className='photos-item'
         onTouch
         onClick={this.navToDetail.bind(this, {width, height, id, color, regular })}
@@ -37,6 +36,9 @@ class PhotoItem extends Component {
           className='photos-item-image'
           mode='widthFix'
           src={small}
+        />
+        <View style={{ 'padding-bottom': paddingBottom }}
+          className='photos-item-holder'
         />
         <View className='photos-item-meta'>
             <View>Photo by <Text className='author'>{user.name}</Text></View>

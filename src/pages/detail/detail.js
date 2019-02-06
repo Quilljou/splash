@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components';
 import get from 'lodash.get'
-
+import classnames from 'classnames'
 import './index.styl'
 import { getPaddingBottom } from '../../common/common'
 import { formatDate, abbreviateNumber } from '../../common/utils'
@@ -14,8 +14,12 @@ import NavBar from '../../components/Navbar'
 export default class Index extends Component {
   config = {
     navigationBarTitleText: '',
-      navigationBarBackgroundColor: '#111',
-      navigationBarTextStyle: 'white'
+    navigationBarBackgroundColor: '#111',
+    navigationBarTextStyle: 'white',
+  }
+
+  static options = {
+    addGlobalClass: true
   }
 
   constructor(props) {
@@ -39,7 +43,7 @@ export default class Index extends Component {
     })
     Taro.getSystemInfo().then(({windowHeight, windowWidth, statusBarHeight}) => {
       const imageHeight = parseFloat(paddingBottom) / 100 * windowWidth
-      const marginTop = (windowHeight - imageHeight - statusBarHeight) / 2 + 'px'
+      const marginTop = (windowHeight - imageHeight - statusBarHeight - 50) / 2 + 'px'
       this.setState({
         photo: {
           ...this.state.photo,
@@ -50,7 +54,7 @@ export default class Index extends Component {
         }
       })
     })
-    this.loadDetail(id);
+    setTimeout(() => this.loadDetail(id), 2000);
   }
 
   async loadDetail(id) {
@@ -166,8 +170,7 @@ export default class Index extends Component {
             />
           </View>
           {
-            showMeta && exif &&
-            <View className='meta' onClick={this.showMoreDetail}>
+            <View className={classnames(['meta animated', { slideShow: showMeta && exif }])} onClick={this.showMoreDetail}>
 
               <View className='reuired'>
                 <View className='social'>
