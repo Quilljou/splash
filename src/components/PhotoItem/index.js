@@ -35,7 +35,7 @@ class PhotoItem extends Component {
           lazyLoad
           className='photos-item-image'
           mode='widthFix'
-          src={small}
+          src={regular}
         />
         <View style={{ 'padding-bottom': paddingBottom }}
           className='photos-item-holder'

@@ -130,9 +130,9 @@ export default class Index extends Component {
             <View className='location'>{ country }{` · `}{ city }</View>
           </View>
           <View className='list'>
-            <View className='list-item' onClick={this.goPoster}>海报生成</View>
+            {/* <View className='list-item' onClick={this.goPoster}>海报生成</View> */}
             <View className='list-item' onClick={this.goAd}>看广告</View>
-            <View className='list-item' onClick={this.goAd}>设置</View>
+            {/* <View className='list-item' onClick={this.goAd}>设置</View> */}
             <View className='list-item' onClick={this.goFeedback}>
               <Button openType='feedback' className='btn-feedback'>您的建议</Button>
             </View>

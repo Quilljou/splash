@@ -16,7 +16,8 @@ class PhotoList extends Component {
 
   static defaultProps = {
     onScroll: _ => _,
-    loadingStatus: LOADING_STATUS.LOADING
+    loadingStatus: LOADING_STATUS.LOADING,
+    list: []
   }
 
   static propTypes = {
