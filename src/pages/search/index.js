@@ -63,7 +63,7 @@ class Index extends Component {
     })
     if(cnRegex.test(query)) {
       try {
-        const { statusCode, data} = await api.translate(query)
+        const { statusCode, data } = await api.translate(query)
         if(statusCode === RES_STATUS.SUCCESS) {
           const result = get(data,'0.0.0')
           result && (query = result)
@@ -86,7 +86,7 @@ class Index extends Component {
       const { statusCode, data} = await api.searchPhotos(query, '', page, perPage)
       if (statusCode === RES_STATUS.SUCCESS){
         this.setState({
-          loadingStatus: LOADING_STATUS.OK,
+          loadingStatus: data.length ? LOADING_STATUS.OK : LOADING_STATUS.NOMORE,
           results: results.concat(data)
         })
       }else {

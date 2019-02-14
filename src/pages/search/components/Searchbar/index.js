@@ -56,6 +56,7 @@ class Index extends Component {
   }
 
   handleSearch() {
+    this.handleBlur()
     this.props.onSearch(this.state.value)
   }
 
@@ -63,7 +64,9 @@ class Index extends Component {
     const { focused } = this.state
     return (
       <View className={classnames(['search-bar', { 'search-bar_focus': focused }])}>
-        <Input placeholder='搜索' focus
+        <Input
+          placeholder='搜索'
+          focus
           className='search-bar-input'
           onFocus={this.handleFoucs}
           onBlur={this.handleBlur}

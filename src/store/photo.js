@@ -66,7 +66,7 @@ const photoStore = observable({
     let payload
     if (statusCode === RES_STATUS.SUCCESS) {
        payload = {
-        loadingStatus: LOADING_STATUS.OK,
+        loadingStatus: data.length ? LOADING_STATUS.OK : LOADING_STATUS.NOMORE,
         list: list.concat(data)
       }
     } else {

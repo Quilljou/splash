@@ -8,6 +8,7 @@ import Taro from '@tarojs/taro'
 import { API_URL } from '../common/constants'
 import Photos from './photos'
 import Collections from './collections'
+import User from './user'
 
 class Unsplash {
   constructor({
@@ -97,4 +98,4 @@ const mixin = (base, ...mixins) => {
   return Ctor;
 };
 
-export default mixin(Unsplash, Photos, Collections)
+export default mixin(Unsplash, Photos, Collections, User)

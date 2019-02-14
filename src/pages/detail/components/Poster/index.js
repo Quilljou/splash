@@ -189,7 +189,6 @@ export default class Poster extends Component {
     }
 
     const filePath = await this.getSavaedTempPath();
-    console.log(filePath)
     Taro.saveImageToPhotosAlbum({
       filePath
     })

@@ -1,0 +1,77 @@
+.page-artist
+  width: 100%
+  display: flex
+  flex-direction: column
+
+.padding
+  padding: 0 30px
+
+
+.profile
+  display: flex
+  padding-top: 100px
+
+.avatar
+  height: 180px
+  min-width: 180px
+  max-width: 180px
+  flex-basis: 180px
+  display: block
+  background-color: #f0f0f0
+  border-radius: 50%
+  margin-right: 20px
+
+.meta
+  padding-top: 40px
+
+.name
+  font-size: 50px
+  text-overflow: ellipsis
+  white-space: nowrap
+  margin-bottom: 16px
+  font-weight: 700
+
+.bio
+  font-size: 30px
+  color: #555
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4em
+
+.counts
+  display: flex
+  justify-content: space-between
+  text-align: center
+  // border-bottom: 1px solid #f0f0f0
+  padding: 68px 0
+
+  &-item
+    flex: 1
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-direction: column
+
+    &.selected
+      .counts-text,
+      .counts-value
+        color: black
+        font-weight: 600
+
+
+  &-value
+    margin-bottom: 16px
+    display: block
+    font-size: 50px
+    letter-spacing: 3px
+
+  &-text
+    font-weight: 400
+    color: #999
+    font-size: 30px
+
+// .list
+//   margin-top: 20px

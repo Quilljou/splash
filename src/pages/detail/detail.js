@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components';
 import get from 'lodash.get'
 import classnames from 'classnames'
+import { stringify } from 'querystring';
 import './index.styl'
 import { getPaddingBottom } from '../../common/common'
 import { formatDate, abbreviateNumber } from '../../common/utils'
@@ -54,7 +55,7 @@ export default class Index extends Component {
         }
       })
     })
-    setTimeout(() => this.loadDetail(id), 2000);
+    this.loadDetail(id)
   }
 
   async loadDetail(id) {
@@ -148,6 +149,18 @@ export default class Index extends Component {
     })
   }
 
+  goArtist(user) {
+    const { profile_image: { large }, name,  username } = user
+
+    Taro.navigateTo({
+      url: `/pages/artist/index?${stringify({
+        avatar: large,
+        name,
+        username
+      })}`
+    })
+  }
+
   render() {
     console.log('render,', this.state)
     const { showMeta,showOptional, photo, showPoster } = this.state;
@@ -169,48 +182,47 @@ export default class Index extends Component {
               onLoad={this.handlePhotoLoad}
             />
           </View>
-          {
-            <View className={classnames(['meta animated', { slideShow: showMeta && exif }])} onClick={this.showMoreDetail}>
-
-              <View className='reuired'>
-                <View className='social'>
-                  <View className='social-left'>
-                    <Text className='iconfont icon-yueduliang'></Text>
-                    <Text className='count'>{abbreviateNumber(views)}</Text>
-                    <Text className='iconfont icon-dianzan'></Text>
-                    <Text className='count'>{abbreviateNumber(likes)}</Text>
-                  </View>
-                  <View className='social-right'>
-                    <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
-                  </View>
+        </View>
+        {
+          showPoster &&  <Poster onClose={this.closePoster} photo={photo}></Poster>
+        }
+        {
+          <View className={classnames(['meta animated', { slideShow: showMeta && exif }])} onClick={this.showMoreDetail}>
+            <View className='reuired'>
+              <View className='social'>
+                <View className='social-left'>
+                  <Text className='iconfont icon-yueduliang'></Text>
+                  <Text className='count'>{abbreviateNumber(views)}</Text>
+                  <Text className='iconfont icon-dianzan'></Text>
+                  <Text className='count'>{abbreviateNumber(likes)}</Text>
                 </View>
-
-                <View className='author'>
-                  <View>
-                    <View>
-                      By<Text className='author-name'>{ ` ${user.name}` }</Text>
-                    </View>
-                    <View className='local-time'>
-                      { user.location ? <Text>{ `@ ${user.location} ` }</Text> : null}
-                      <Text>{ this.formatDate(updated_at) }</Text>
-                    </View>
-                  </View>
-                  <Image src={user.profile_image.medium} className='author-avatar' />
+                <View className='social-right'>
+                  <Text className='iconfont icon-gengduo' onClick={this.openActionSheet}></Text>
                 </View>
               </View>
 
-              {
-                showOptional &&
-                  <View className='optional'>
-                    <Exif exif={exif}></Exif>
+              <View className='author'>
+                <View>
+                  <View>
+                    By<Text className='author-name'>{ ` ${user.name}` }</Text>
                   </View>
-              }
+                  <View className='local-time'>
+                    { user.location ? <Text>{ `@ ${user.location} ` }</Text> : null}
+                    <Text>{ this.formatDate(updated_at) }</Text>
+                  </View>
+                </View>
+                <Image src={user.profile_image.medium} className='author-avatar' onClick={this.goArtist.bind(this,user)} />
+              </View>
             </View>
-          }
-          {
-            showPoster &&  <Poster onClose={this.closePoster} photo={photo}></Poster>
-          }
-        </View>
+
+            {
+              showOptional &&
+                <View className='optional'>
+                  <Exif exif={exif}></Exif>
+                </View>
+            }
+          </View>
+        }
       </View>
     )
   }
