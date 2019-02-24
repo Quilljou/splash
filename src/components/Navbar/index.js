@@ -1,4 +1,4 @@
-import Taro, { Component } from '@tarojs/taro'
+import Taro, { Component, getCurrentPages } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components';
 import PropTypes from 'prop-types';
 import classnames from 'classnames'
@@ -25,6 +25,12 @@ class Navbar extends Component {
   }
 
   goBack() {
+    const pages = getCurrentPages()
+    if(pages.length === 1) {
+      return Taro.navigateTo({
+        url: '/pages/index/index'
+      })
+    }
     Taro.navigateBack()
   }
 

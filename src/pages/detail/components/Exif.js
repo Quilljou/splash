@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components';
 import './index.styl'
 import { EXIFS } from '../../../common/constants'
+
 // aperture: "1.8"
 // exposure_time: "1/35"
 // focal_length: "4.0"

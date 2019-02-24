@@ -44,6 +44,12 @@ export default class Index extends Component {
 
   componentDidHide () { }
 
+  onShareAppMessage() {
+    return {
+      title: '这些图片都好美👇'
+    }
+  }
+
   onReachBottom() {
     const { photoStore } = this.props
     const { currentPhotoList, photos } = photoStore

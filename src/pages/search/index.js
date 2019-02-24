@@ -46,6 +46,12 @@ class Index extends Component {
     }
   }
 
+  onShareAppMessage() {
+    return {
+      title: '这里能搜索很多高质量的图片'
+    }
+  }
+
   resetSearch() {
     this.setState({
       page: 1,

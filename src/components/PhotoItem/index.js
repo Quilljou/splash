@@ -25,14 +25,13 @@ class PhotoItem extends Component {
       <View
         className='photos-item'
         onTouch
-        onClick={this.navToDetail.bind(this, {width, height, id, color, regular })}
+        onClick={this.navToDetail.bind(this, {width, height, id, regular })}
       >
         <Image style={
           {
             'background-color': color
           }
         }
-          lazyLoad
           className='photos-item-image'
           mode='widthFix'
           src={regular}

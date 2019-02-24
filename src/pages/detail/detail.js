@@ -29,9 +29,20 @@ export default class Index extends Component {
       photo: {},
       showMeta: true,
       showOptional: false,
-      isActionSheetOpened: false,
       showPoster: false
     }
+  }
+
+  onShareAppMessage() {
+    const photo = this.$router.params
+    const { regular } = photo
+    const shareParam = {
+      imageUrl: regular,
+      path: '/pages/detail/detail?' + stringify(photo),
+      title: '这张图片不错哦！'
+    }
+    console.log(shareParam)
+    return shareParam
   }
 
   componentWillMount() {
@@ -164,7 +175,8 @@ export default class Index extends Component {
   render() {
     console.log('render,', this.state)
     const { showMeta,showOptional, photo, showPoster } = this.state;
-    const { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
+    let { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
+    regular = decodeURIComponent(regular)
     return (
       <View className='page-detail'>
         <NavBar showBack></NavBar>

@@ -40,6 +40,7 @@ class Index extends Component {
       loadingStatus: LOADING_STATUS.LOADING
     }
   }
+
   componentWillMount() {
     const user = this.$router.params
     this.setState({
@@ -49,6 +50,15 @@ class Index extends Component {
       }
     }, () => this.loadCount(this.state.currentCount))
     this.getUserInfo(user.username)
+  }
+
+  onShareAppMessage() {
+    const user = this.$router.params
+    const { profile_image = {}, name = ''} = this.state.user
+    return {
+      title: `这是我喜欢的摄影师${name}`,
+      imageUrl: profile_image.large
+    }
   }
 
 
@@ -122,14 +132,24 @@ class Index extends Component {
     this.loadCount()
   }
 
+  handleClickBio(bio, name) {
+    if(!bio) return
+    Taro.showModal({
+      title: `关于${name}`,
+      content: bio,
+      showCancel: false,
+      confirmText: '了解'
+    })
+  }
+
   render() {
     const { user, loadingStatus, currentList, page, currentCount } = this.state
-    const {
-      avatar,
+    let {
       name,
       profile_image = {},
       bio,
     } = user
+    name = decodeURIComponent(name)
 
     countsItem.map(item => {
       const value = user[item.field]
@@ -146,7 +166,7 @@ class Index extends Component {
             <View className='name'>
               {name}
             </View>
-            <View className='bio'>
+            <View className='bio' onClick={this.handleClickBio.bind(this, bio, name)}>
               {bio ? bio : null}
             </View>
           </View>
