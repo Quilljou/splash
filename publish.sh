@@ -1,7 +1,5 @@
-
-
-
 #!/usr/bin/env sh
+# only support macOS
 set -e
 
 # login
@@ -24,14 +22,16 @@ then
   read desc
   echo "\nReleasing $VERSION ..."
 
-  echo `yarn build:weapp`
 
-  $CLI -u "$VERSION@$PWD/dist" --upload-desc $desc
 
   # commit
   git add -A
   # git commit -m "[release] $VERSION" # commit build message
   npm version $VERSION --force --message "release: $VERSION" # release new version
+
+  echo `npm run build:weapp`
+
+  $CLI -u "$VERSION@$PWD/dist" --upload-desc $desc
 
   # publish
   git push origin master
