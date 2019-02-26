@@ -19,19 +19,6 @@ export default class Index extends Component {
     navigationBarTitleText: '首页',
   }
 
-  initDefaultPhotos() {
-    return tabs.reduce((prev, next) => {
-        prev[next.value] = {
-            tab: next,
-            page: 1,
-            perPage: 6,
-            list: [],
-            loadingStatus: LOADING_STATUS.LOADING
-          }
-        return prev;
-    },{})
-  }
-
   componentWillMount () { }
 
   componentDidMount () {

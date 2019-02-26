@@ -8,7 +8,7 @@ function initDefaultPhotos() {
     prev[next.value] = {
       tab: next,
       page: 1,
-      perPage: 6,
+      perPage: 20,
       list: [],
       loadingStatus: LOADING_STATUS.LOADING
     }

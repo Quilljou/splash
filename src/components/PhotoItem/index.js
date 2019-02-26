@@ -18,7 +18,7 @@ class PhotoItem extends Component {
   }
 
   render() {
-    const { width, height, urls: { small, regular }, color, user, id } = this.props.photo;
+    const { width, height, urls: { regular }, color, user, id } = this.props.photo;
     if(!width) return null;
     const paddingBottom = getPaddingBottom(height, width)
     return (
@@ -34,6 +34,7 @@ class PhotoItem extends Component {
         }
           className='photos-item-image'
           mode='widthFix'
+          lazyLoad
           src={regular}
         />
         <View style={{ 'padding-bottom': paddingBottom }}

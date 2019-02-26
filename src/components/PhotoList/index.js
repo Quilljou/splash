@@ -35,7 +35,6 @@ class PhotoList extends Component {
   }
 
   static options = {
-
     addGlobalClass: true
   }
 

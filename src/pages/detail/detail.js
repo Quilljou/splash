@@ -177,6 +177,7 @@ export default class Index extends Component {
     const { showMeta,showOptional, photo, showPoster } = this.state;
     let { regular, paddingBottom, marginTop = '0px', user = {}, updated_at, views, likes, exif } = photo
     regular = decodeURIComponent(regular)
+    if(!regular) return null;
     return (
       <View className='page-detail'>
         <NavBar showBack></NavBar>
@@ -187,12 +188,16 @@ export default class Index extends Component {
             onClick={this.toggleMeta}
             onLongPress={this.openActionSheet}
           >
-            <Image
-              className='photos-item-image'
-              mode='widthFix'
-              src={regular}
-              onLoad={this.handlePhotoLoad}
-            />
+            {
+              regular && (
+                <Image
+                  className='photos-item-image'
+                  mode='widthFix'
+                  src={regular}
+                  onLoad={this.handlePhotoLoad}
+                />
+              )
+            }
           </View>
         </View>
         {

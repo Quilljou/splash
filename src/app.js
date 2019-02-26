@@ -21,10 +21,11 @@ class App extends Component {
 
   config = {
     pages: [
+      'pages/about/index',
+      'pages/center/index',
       'pages/index/index',
       'pages/artist/index',
       'pages/search/index',
-      'pages/center/index',
       'pages/detail/detail',
     ],
     window: {

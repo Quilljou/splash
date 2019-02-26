@@ -105,6 +105,13 @@ export default class Index extends Component {
 
   }
 
+
+  goAbout() {
+    Taro.navigateTo({
+      url: '/pages/about/index'
+    })
+  }
+
   render() {
     let { userInfo, showAuth, backgroundImage } = this.state
     userInfo = this.prettyUserInfo(userInfo)
@@ -132,6 +139,7 @@ export default class Index extends Component {
           <View className='list'>
             {/* <View className='list-item' onClick={this.goPoster}>海报生成</View> */}
             <View className='list-item' onClick={this.goAd}>看广告</View>
+            <View className='list-item' onClick={this.goAbout}>关于</View>
             {/* <View className='list-item' onClick={this.goAd}>设置</View> */}
             <View className='list-item' onClick={this.goFeedback}>
               <Button openType='feedback' className='btn-feedback'>您的建议</Button>
