@@ -39,11 +39,4 @@ then
   # git checkout dev
   # git rebase master
   # git push eleme dev
-
-  if [[ $VERSION =~ "beta" ]]
-  then
-    legos publish --tag beta
-  else
-    legos publish
-  fi
 fi
